@@ -14,4 +14,15 @@ class Product extends Model
     const TYPE_MONOPALLET = 'TYPE_MONOPALLET';
 
     const TYPE_SUPER_SAFE = 'TYPE_SUPER_SAFE';
+
+    protected $casts = [
+        'sizes',
+        'files',
+        'colors'
+    ];
+
+    public function marketplace()
+    {
+        return $this->belongsTo(MarketplaceType::class, 'marketplace_type_id');
+    }
 }

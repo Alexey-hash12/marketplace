@@ -19,6 +19,7 @@ Route::post('/login/form', [\App\Http\Controllers\AuthController::class, 'login'
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('index');
+    Route::post('/logout', [\App\Http\Controllers\AuthController::class, 'logout'])->name('logout');
 
     // Логист
     Route::group(['middleware' => 'user.role:' . implode(',', [\App\Models\User::ROLE_LOGIST]), 'prefix' => 'logist/', 'as' => 'logist.'], function () {
@@ -38,5 +39,52 @@ Route::group(['middleware' => 'auth'], function () {
     // Логист
     Route::group(['middleware' => 'user.role:' . implode(',', [\App\Models\User::ROLE_ADMIN]), 'prefix' => 'admin/',  'as' => 'admin.'], function () {
         Route::get('/', [\App\Http\Controllers\Admin\AdminController::class, 'index'])->name('index');
+
+        // Продукты
+        Route::group(['prefix' => 'products/', 'as' => 'products.'], function() {
+            Route::get('/', [\App\Http\Controllers\Admin\AdminController::class, 'products'])->name('index');
+            Route::post('/store', [\App\Http\Controllers\Admin\AdminController::class, 'storeProducts'])->name('storeUsers');
+            Route::post('/update/{product}', [\App\Http\Controllers\Admin\AdminController::class, 'updateProducts'])->name('updateProducts');
+            Route::post('/delete/{product}', [\App\Http\Controllers\Admin\AdminController::class, 'deleteProducts'])->name('deleteProducts');
+        });
+
+        // Поставки
+        Route::group(['prefix' => 'incomes/', 'as' => 'incomes.'], function() {
+            Route::get('/', [\App\Http\Controllers\Admin\AdminController::class, 'incomes'])->name('index');
+            Route::post('/store', [\App\Http\Controllers\Admin\AdminController::class, 'storeIncomes'])->name('storeUsers');
+            Route::post('/update/{income}', [\App\Http\Controllers\Admin\AdminController::class, 'updateIncomes'])->name('updateUsers');
+            Route::post('/delete/{income}', [\App\Http\Controllers\Admin\AdminController::class, 'deleteIncomes'])->name('deleteUsers');
+        });
+
+        // Пользователи
+        Route::group(['prefix' => 'users/', 'as' => 'users.'], function() {
+            Route::get('/', [\App\Http\Controllers\Admin\AdminController::class, 'users'])->name('index');
+            Route::post('/store', [\App\Http\Controllers\Admin\AdminController::class, 'storeUsers'])->name('storeUsers');
+            Route::post('/update/{user}', [\App\Http\Controllers\Admin\AdminController::class, 'updateUsers'])->name('updateUsers');
+            Route::post('/delete/{user}', [\App\Http\Controllers\Admin\AdminController::class, 'deleteUsers'])->name('deleteUsers');
+        });
+
+        // Токены
+        Route::group(['prefix' => 'tokens/', 'as' => 'tokens.'], function () {
+            Route::get('/', [\App\Http\Controllers\Admin\AdminController::class, 'token'])->name('index');
+            Route::post('/store', [\App\Http\Controllers\Admin\AdminController::class, 'storeToken'])->name('storeToken');
+            Route::post('/delete', [\App\Http\Controllers\Admin\AdminController::class, 'deleteToken'])->name('deleteToken');
+        });
+
+        // Остатки
+        Route::group(['prefix' => 'leftovers/', 'as' => 'left-overs.'], function () {
+            Route::get('/', [\App\Http\Controllers\Admin\AdminController::class, 'leftover'])->name('index');
+            Route::post('/store', [\App\Http\Controllers\Admin\AdminController::class, 'storeLeftOver'])->name('storeLeftOver');
+            Route::post('/update/{leftOver}', [\App\Http\Controllers\Admin\AdminController::class, 'updateLeftOver'])->name('updateLeftOver');
+            Route::post('/delete', [\App\Http\Controllers\Admin\AdminController::class, 'deleteLeftOver'])->name('deleteLeftOver');
+        });
+
+        // Склады
+        Route::group(['prefix' => 'warehouses/', 'as' => 'warehouses.'], function () {
+            Route::get('/', [\App\Http\Controllers\Admin\AdminController::class, 'warehouses'])->name('index');
+            Route::post('/store', [\App\Http\Controllers\Admin\AdminController::class, 'storeWarehouse'])->name('storeWarehouse');
+            Route::post('/update/{warehouse}', [\App\Http\Controllers\Admin\AdminController::class, 'updateWarehouse'])->name('updateWarehouse');
+            Route::post('/delete/{warehouse}', [\App\Http\Controllers\Admin\AdminController::class, 'deleteWarehouse'])->name('deleteWarehouse');
+        });
     });
 });

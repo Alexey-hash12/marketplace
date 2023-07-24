@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class MarketplaceType extends Model
 {
     use HasFactory;
+
+    const ACTIVE = 'ACTIVE';
+    const CLOSED = 'CLOSED';
 }
