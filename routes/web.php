@@ -60,8 +60,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::group(['prefix' => 'users/', 'as' => 'users.'], function() {
             Route::get('/', [\App\Http\Controllers\Admin\AdminController::class, 'users'])->name('index');
             Route::post('/store', [\App\Http\Controllers\Admin\AdminController::class, 'storeUsers'])->name('storeUsers');
-            Route::post('/update/{user}', [\App\Http\Controllers\Admin\AdminController::class, 'updateUsers'])->name('updateUsers');
-            Route::post('/delete/{user}', [\App\Http\Controllers\Admin\AdminController::class, 'deleteUsers'])->name('deleteUsers');
+            Route::post('/delete/', [\App\Http\Controllers\Admin\AdminController::class, 'deleteUsers'])->name('deleteUsers');
         });
 
         // Токены
@@ -83,8 +82,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::group(['prefix' => 'warehouses/', 'as' => 'warehouses.'], function () {
             Route::get('/', [\App\Http\Controllers\Admin\AdminController::class, 'warehouses'])->name('index');
             Route::post('/store', [\App\Http\Controllers\Admin\AdminController::class, 'storeWarehouse'])->name('storeWarehouse');
-            Route::post('/update/{warehouse}', [\App\Http\Controllers\Admin\AdminController::class, 'updateWarehouse'])->name('updateWarehouse');
-            Route::post('/delete/{warehouse}', [\App\Http\Controllers\Admin\AdminController::class, 'deleteWarehouse'])->name('deleteWarehouse');
+            Route::post('/delete', [\App\Http\Controllers\Admin\AdminController::class, 'deleteWarehouse'])->name('deleteWarehouse');
         });
     });
 });

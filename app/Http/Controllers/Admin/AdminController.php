@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -63,14 +64,50 @@ class AdminController extends Controller
     /**
      * @param Request $request
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function users(Request $request)
     {
         $users = User::query();
+        $users = $this->sort($users, $request);
+        $users = $this->filter($users, $request);
+
         $users = $users->paginate(25);
         $session = session()->get('message');
 
-        return view('admin.users', compact('users', 'session'));
+        $data = [
+            'id' => '#',
+            'name' => 'Имя',
+            'email' => 'Почта',
+            'role' => 'Роль',
+            'created_at' => 'Дата создания'
+        ];
+
+        return view('admin.users', compact('users', 'session', 'data'));
+    }
+
+    public function storeUsers(Request $request)
+    {
+        $user = User::create([
+            'name' => $request->name,
+            'password' => Hash::make($request->password),
+            'email' => $request->email,
+            'role' => $request->role
+        ]);
+
+        session()->flash('message', 'Вы успешно создали пользователя');
+
+
+        return back();
+    }
+
+    public function deleteUsers(Request $request)
+    {
+        $token = User::findOrFail($request->delete_id);
+        $token->delete();
+        session()->flash('message', 'Вы успешно удалили пользователя');
+        return back();
     }
 
     /**
@@ -135,14 +172,33 @@ class AdminController extends Controller
 
     public function storeWarehouse(Request $request)
     {
+        Warehouse::create([
+            'marketplace_type_id' => $request->marketplace_type_id,
+            'name' => $request->name
+        ]);
 
+        session()->flash('message', 'Вы успешно создали склад');
+
+        return back();
+    }
+
+    public function deleteWarehouse(Request $request)
+    {
+        $leftOver = Warehouse::where('id', $request->delete_id)->firstOrFail();
+        $leftOver->delete();
+        session()->flash('message', 'Вы успешно удалили склад');
+
+        return back();
     }
 
     public function warehouses(Request $request)
     {
-        $warehouses = Warehouse::query()->join('marketplace_types', 'warehouses.marketplace_type_id', '=', 'marketplace_types.id')
-        ->join('warehouse_products', 'warehouse_products.warehouse_id', '=', 'warehouses.id')
-        ->select('warehouses.*', DB::raw('marketplace_types.name as marketplace_name'), DB::raw('COUNT(warehouse_products) as count_products'));
+        $warehouses = Warehouse::query()
+            ->join('marketplace_types', 'warehouses.marketplace_type_id', '=', 'marketplace_types.id')
+            ->leftJoin('warehouse_products', 'warehouse_products.warehouse_id', '=', 'warehouses.id')
+            ->select('warehouses.*', DB::raw('marketplace_types.name as marketplace_name'), DB::raw('COUNT(warehouse_products.id) as count_products'))
+            ->groupBy('warehouses.id');
+
 
         $warehouses = $this->sort($warehouses, $request);
         $warehouses = $this->filter($warehouses, $request);
@@ -154,7 +210,8 @@ class AdminController extends Controller
             'id' => '#',
             'name' => 'Название склада',
             'marketplace_name' => 'Маркетплэйс',
-            'created_at' => 'Дата создания'
+            'count_products' => 'Количество продуктов',
+            'created_at' => 'Дата создания',
         ];
 
         return view('admin.warehouses', compact('warehouses', 'session', 'data'));

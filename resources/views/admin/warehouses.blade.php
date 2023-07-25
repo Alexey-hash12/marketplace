@@ -5,7 +5,7 @@
     <div class="jumbotron" style="background-color: #e9ecef;padding: 20px;">
         <div class="container">
             <h3 style="font-size: 38px;font-weight: 400;" class="display-3">Склады</h3>
-            <p>...</p>
+            <p>Зарегистрированные склады в системе</p>
             <div class="d-flex" style="font-size: 14px; column-gap: 8px;">
             </div>
         </div>
@@ -48,6 +48,7 @@
                                 </div>
                             </th>
                         @endforeach
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -56,9 +57,12 @@
                             <th scope="row">{{$warehouse->id}}</th>
                             <td>{{$warehouse->name}}</td>
                             <td>{{$warehouse->marketplace_name}}</td>
+                            <td>{{$warehouse->count_products}}</td>
                             <td>{{$warehouse->created_at}}</td>
+                            <td>
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal1" data-id="{{$warehouse->id}}" class="btn btn-danger delete-btn">Удалить</button>
+                            </td>
                         </tr>
-
                     @endforeach
                     </tbody>
                 </table>
@@ -92,11 +96,46 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-
+                        <div class="form-group">
+                            <label for="">Название</label>
+                            <input type="text" class="form-control" required name="name">
+                        </div>
+                        <div class="form-group">
+                            <label for="">Маркетплэйс</label>
+                            <select name="marketplace_type_id" required class="form-control">
+                                <option value="">Выберите маркетплэйс</option>
+                                @foreach(\App\Models\MarketplaceType::where('status', 'active')->get() as $marketPlace)
+                                    <option value="{{$marketPlace->id}}">{{$marketPlace->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
                         <button type="submit" class="btn btn-success">Сохранить</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <form id="deleteForm" action="{{route('admin.warehouses.deleteWarehouse')}}" method="post">
+            @csrf
+            <input type="hidden" id="deleteTokenId" name="delete_id" value="">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel1">Удаление</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Вы точно хотите удалить?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button type="submit" class="btn btn-danger">Удалить</button>
                     </div>
                 </div>
             </div>

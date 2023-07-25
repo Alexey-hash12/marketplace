@@ -219,7 +219,7 @@
                             <label for="">Маркетплэйс</label>
                             <select name="marketplace_id" required class="form-control">
                                 <option value="">Выберите маркетплэйс</option>
-                                @foreach(\App\Models\MarketplaceType::get() as $marketPlace)
+                                @foreach(\App\Models\MarketplaceType::where('status', 'active')->get() as $marketPlace)
                                     <option value="{{$marketPlace->id}}">{{$marketPlace->name}}</option>
                                 @endforeach
                             </select>

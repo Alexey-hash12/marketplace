@@ -20,6 +20,13 @@ class User extends Authenticatable
 
     const ROLE_PACKER = 'ROLE_PACKER';
 
+    public static array $userRoles = [
+        self::ROLE_ADMIN => 'Админ',
+        self::ROLE_LOGIST => 'Логист',
+        self::ROLE_STORE_KEEPER => 'Кладовщик',
+        self::ROLE_PACKER => 'Упаковщик'
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
