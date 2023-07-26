@@ -37,13 +37,52 @@ class AdminController extends Controller
      */
     public function products(Request $request)
     {
-        $products = Product::query()->with('marketplace');
+        $products = Product::query()->join('marketplace_types', 'products.marketplace_type_id', '=', 'marketplace_types.id')
+            ->select('products.*', DB::raw('marketplace_types.name as marketplace_name'));
 
+        $products = $this->sort($products, $request);
+        $products = $this->filter($products, $request);
         $products = $products->paginate(25);
 
         $session = session()->get('message');
 
-        return view('admin.products', compact('products', 'session'));
+        $data = [
+            'id' => '#',
+            'instance_id' => 'Id в системе маркеплэйса',
+            'marketplace_name' => 'Маркеплэйс',
+            'name' => 'Наименование',
+            'sku' => 'Артикул',
+            'price' => 'Цена',
+            'sizes' => 'Размеры',
+            'colors' => 'Цвета',
+            'files' => 'Файлы',
+            'income_type' => 'Тип поставки'
+        ];
+
+        return view('admin.products', compact('products', 'session', 'data'));
+    }
+
+    public function storeProducts(Request $request)
+    {
+        $product = Product::create([
+            $request->only([
+                'instance_id',
+                'marketplace_type_id',
+                'name',
+                'sku',
+                'price',
+                'sizes',
+                'colors',
+                'files',
+                'income_type'
+            ])
+        ]);
+
+        $product->warehouses()->sync($request->warehouses ?? []);
+
+        session()->flash('message', 'Вы успешно создали продукт');
+
+        return back();
     }
 
     /**

@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     const TYPE_BOX = 'TYPE_BOX';
 
@@ -15,14 +16,31 @@ class Product extends Model
 
     const TYPE_SUPER_SAFE = 'TYPE_SUPER_SAFE';
 
-    protected $casts = [
+    protected $fillable = [
+        'instance_id',
+        'marketplace_type_id',
+        'name',
+        'sku',
+        'price',
         'sizes',
+        'colors',
         'files',
-        'colors'
+        'income_type'
+    ];
+
+    protected $casts = [
+        'sizes' => 'array',
+        'files' => 'array',
+        'colors' => 'array'
     ];
 
     public function marketplace()
     {
         return $this->belongsTo(MarketplaceType::class, 'marketplace_type_id');
+    }
+
+    public function warehouses()
+    {
+        return $this->belongsToMany(Warehouse::class, 'warehouse_products', 'warehouse_id', 'product_id');
     }
 }

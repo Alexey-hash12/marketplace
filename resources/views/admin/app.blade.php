@@ -9,22 +9,10 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{asset('/css/virtual-select.min.css')}}">
+    <script src="{{asset('/js/virtual-select.min.js')}}"></script>
 </head>
 <body>
-{{--<div class="d-flex justify-content-between flex-column flex-md-row align-items-center p-3 px-md-4 bg-white border-bottom box-shadow">--}}
-{{--    <div class="d-flex">--}}
-{{--        <h5 class="my-0 mr-md-auto font-weight-normal">Marketplace</h5>--}}
-
-{{--        <nav class="my-2 my-md-0 mr-md-3">--}}
-{{--            --}}
-{{--            <a class="p-2 text-dark" href="">Продукты</a>--}}
-{{--            <a class="p-2 text-dark" href="">Поставки</a>--}}
-{{--            <a class="p-2 text-dark" href="">Пользователи</a>--}}
-{{--            <a class="p-2 text-dark" href="">Токены</a>--}}
-{{--        </nav>--}}
-{{--    </div>--}}
-{{--</div>--}}
-
 <style>
     @media screen and (min-width: 768px) {
         .container_my {

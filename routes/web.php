@@ -43,9 +43,8 @@ Route::group(['middleware' => 'auth'], function () {
         // Продукты
         Route::group(['prefix' => 'products/', 'as' => 'products.'], function() {
             Route::get('/', [\App\Http\Controllers\Admin\AdminController::class, 'products'])->name('index');
-            Route::post('/store', [\App\Http\Controllers\Admin\AdminController::class, 'storeProducts'])->name('storeUsers');
-            Route::post('/update/{product}', [\App\Http\Controllers\Admin\AdminController::class, 'updateProducts'])->name('updateProducts');
-            Route::post('/delete/{product}', [\App\Http\Controllers\Admin\AdminController::class, 'deleteProducts'])->name('deleteProducts');
+            Route::post('/store', [\App\Http\Controllers\Admin\AdminController::class, 'storeProducts'])->name('storeProducts');
+            Route::post('/delete', [\App\Http\Controllers\Admin\AdminController::class, 'deleteProducts'])->name('deleteProducts');
         });
 
         // Поставки
