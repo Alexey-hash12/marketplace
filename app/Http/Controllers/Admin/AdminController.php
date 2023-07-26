@@ -64,7 +64,7 @@ class AdminController extends Controller
 
     public function storeProducts(Request $request)
     {
-        $product = Product::create([
+        $product = Product::create(
             $request->only([
                 'instance_id',
                 'marketplace_type_id',
@@ -76,12 +76,20 @@ class AdminController extends Controller
                 'files',
                 'income_type'
             ])
-        ]);
+        );
 
         $product->warehouses()->sync($request->warehouses ?? []);
 
         session()->flash('message', 'Вы успешно создали продукт');
 
+        return back();
+    }
+
+    public function deleteProducts(Request $request)
+    {
+        $token = Product::findOrFail($request->delete_id);
+        $token->delete();
+        session()->flash('message', 'Вы успешно удалили продукт');
         return back();
     }
 

@@ -126,6 +126,16 @@
                             <label for="">Id в системе Маркетплэйса</label>
                             <input type="text" placeholder="Укажите Id" class="form-control" required name="instance_id">
                         </div>
+                        <div class="form-group" style="display: flex;
+flex-direction: column;">
+                            <label for="">Маркетплэйс</label>
+                            <select name="marketplace_type_id" required>
+                                <option value="">Выберите маркетплэйс</option>
+                                @foreach(\App\Models\MarketplaceType::where('status', 'active')->get() as $marketPlace)
+                                    <option value="{{$marketPlace->id}}">{{$marketPlace->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
                         <div class="form-group">
                             <label for="">Наименование</label>
                             <input type="text" placeholder="Укажите Наименование" class="form-control" required name="name">
