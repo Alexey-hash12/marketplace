@@ -99,9 +99,33 @@
                 </a>
             </li>
             <li>
+                <a href="{{route('admin.marketplace.index')}}" class="nav-link text-white {{request()->route()->uri == 'admin/marketplace' ? 'active' : ''}}">
+                    <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
+                    Маркетплэйсы
+                </a>
+            </li>
+            <li>
                 <a href="{{route('admin.tokens.index')}}" class="nav-link text-white {{request()->route()->uri == 'admin/tokens' ? 'active' : ''}}">
                     <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
                     Токены
+                </a>
+            </li>
+            <li>
+                <a href="{{route('logist.index')}}" class="nav-link text-white">
+                    <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
+                    Кабинет логиста
+                </a>
+            </li>
+            <li>
+                <a href="{{route('store-keeper.index')}}" class="nav-link text-white">
+                    <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
+                    Кабинет кладовщика
+                </a>
+            </li>
+            <li>
+                <a href="{{route('packer.index')}}" class="nav-link text-white">
+                    <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
+                    Кабинет упаковщика
                 </a>
             </li>
         </ul>

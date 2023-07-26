@@ -18,6 +18,15 @@
             </div>
         </div>
     @endif
+
+    @if($error)
+        <div class="container_my mt-2">
+            <div class="alert alert-danger" role="alert">
+                {{$error}}
+            </div>
+        </div>
+    @endif
+
     <form action="" id="myForm">
         <input type="hidden" name="sort_type" id="sort_type_input">
         <input type="hidden" name="sort_value" id="sort_value_input">
@@ -60,7 +69,10 @@
                             <td>{{$warehouse->count_products}}</td>
                             <td>{{$warehouse->created_at}}</td>
                             <td>
-                                <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal1" data-id="{{$warehouse->id}}" class="btn btn-danger delete-btn">Удалить</button>
+                                <div>
+                                    <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal4" data-object="{{$warehouse}}" class="btn btn-primary update-btn">Изменить</button>
+                                    <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal1" data-id="{{$warehouse->id}}" class="btn btn-danger delete-btn">Удалить</button>
+                                </div>
                             </td>
                         </tr>
                     @endforeach
@@ -120,6 +132,41 @@
     </div>
 
     <!-- Modal -->
+    <div class="modal fade" id="exampleModal4" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <form action="{{route('admin.warehouses.updateWarehouse')}}" method="post">
+            <input type="hidden" name="id" id="warehouseid">
+            @csrf
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Форма изменения</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="">Название</label>
+                            <input type="text" id="warehousename" class="form-control" required name="name">
+                        </div>
+                        <div class="form-group">
+                            <label for="">Маркетплэйс</label>
+                            <select name="marketplace_type_id" id="warehousemarketplace" required class="form-control">
+                                <option value="">Выберите маркетплэйс</option>
+                                @foreach(\App\Models\MarketplaceType::where('status', 'active')->get() as $marketPlace)
+                                    <option value="{{$marketPlace->id}}">{{$marketPlace->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button type="submit" class="btn btn-success">Сохранить</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Modal -->
     <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <form id="deleteForm" action="{{route('admin.warehouses.deleteWarehouse')}}" method="post">
             @csrf
@@ -148,5 +195,14 @@
             const id = $(this).data('id');
             $('#deleteTokenId').val(id);
         })
+
+        $('.update-btn').click(function () {
+           const object = $(this).data('object');
+           $('#warehousename').val(object.name);
+            $('#warehouseid').val(object.id);
+            $('#warehousemarketplace').val(object.marketplace_type_id).change();
+            console.log(object.marketplace_type_id);
+        });
+
     </script>
 @endsection

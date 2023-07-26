@@ -48,6 +48,8 @@ class Controller extends BaseController
     {
         if ($request->get('sort_type') && $request->get('sort_value')) {
             $products->orderBy($request->get('sort_type'), $request->get('sort_value'));
+        } else {
+            $products->orderByDesc('updated_at');
         }
 
         return $products;

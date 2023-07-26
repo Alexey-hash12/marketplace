@@ -19,6 +19,15 @@
         </div>
     @endif
 
+    @if($error ?? null)
+        <div class="container_my mt-2">
+            <div class="alert alert-danger" role="alert">
+                {{$error}}
+            </div>
+        </div>
+    @endif
+
+
     <form action="" id="myForm">
         <input type="hidden" name="sort_type" id="sort_type_input">
         <input type="hidden" name="sort_value" id="sort_value_input">

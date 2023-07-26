@@ -19,23 +19,32 @@
         </div>
     @endif
 
+    @if($error ?? null)
+        <div class="container_my mt-2">
+            <div class="alert alert-danger" role="alert">
+                {{$error}}
+            </div>
+        </div>
+    @endif
+
+
     <div class="container_my mt-5 mb-5">
         <div class="row align-items-md-stretch">
             <div class="col-md-6">
                 <div class="h-100 p-5 text-white bg-dark rounded-3">
-                    <h2>Все Продукты</h2>
+                    <h2><a href="{{route('admin.products.index')}}">Все Продукты</a></h2>
                     <p>
                         Просмотр всех продуктов, получение складов где находятся эти продукты, а также их остатки.
 
                     </p>
-                    <button class="btn btn-outline-light" type="button">Узнать больше</button>
+                    <button class="btn btn-outline-light" type="button"><a href="{{route('admin.products.index')}}">Узнать больше</a></button>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="h-100 p-5 bg-light border rounded-3">
-                    <h2>Все поставки</h2>
+                    <h2><a href="{{route('admin.incomes.index')}}">Все поставки</a></h2>
                     <p>На основе данных по API (скорости продаж, кол-во единиц в наличии, заказов с региона и др.) и данных своего склада, товара в пути скрипт формирует поставки на склады маркетплейса. Складов несколько...</p>
-                    <button class="btn btn-outline-secondary" type="button">Узнать больше</button>
+                    <button class="btn btn-outline-secondary" type="button"><a href="{{route('admin.incomes.index')}}">Узнать больше</a></button>
                 </div>
             </div>
         </div>

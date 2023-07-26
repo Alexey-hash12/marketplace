@@ -26,17 +26,17 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/', [\App\Http\Controllers\Logist\LogistController::class, 'index'])->name('index');
     });
 
-    // Логист
-    Route::group(['middleware' => 'user.role:' . implode(',', [\App\Models\User::ROLE_STORE_KEEPER]), 'prefix' => 'store-keeper/', 'as' => 'store-keeper.'], function () {
-        Route::get('/', [\App\Http\Controllers\Storekeeper\StoreKeeperController::class, 'index'])->name('index');
+    // Кладовщик
+    Route::group(['middleware' => 'user.role:' . implode(',', [\App\Models\User::ROLE_STORE_KEEPER, \App\Models\User::ROLE_ADMIN]), 'prefix' => 'store-keeper/', 'as' => 'store-keeper.'], function () {
+        Route::get('/{type?}', [\App\Http\Controllers\Storekeeper\StoreKeeperController::class, 'index'])->name('index');
     });
 
-    // Логист
+    // Упаковщик
     Route::group(['middleware' => 'user.role:' . implode(',', [\App\Models\User::ROLE_PACKER]), 'prefix' => 'packer/',  'as' => 'packer.'], function () {
         Route::get('/', [\App\Http\Controllers\Packer\PackerController::class, 'index'])->name('index');
     });
 
-    // Логист
+    // Админ
     Route::group(['middleware' => 'user.role:' . implode(',', [\App\Models\User::ROLE_ADMIN]), 'prefix' => 'admin/',  'as' => 'admin.'], function () {
         Route::get('/', [\App\Http\Controllers\Admin\AdminController::class, 'index'])->name('index');
 
@@ -53,6 +53,13 @@ Route::group(['middleware' => 'auth'], function () {
             Route::post('/store', [\App\Http\Controllers\Admin\AdminController::class, 'storeIncomes'])->name('storeUsers');
             Route::post('/update/{income}', [\App\Http\Controllers\Admin\AdminController::class, 'updateIncomes'])->name('updateUsers');
             Route::post('/delete/{income}', [\App\Http\Controllers\Admin\AdminController::class, 'deleteIncomes'])->name('deleteUsers');
+        });
+
+        Route::group(['prefix' => 'marketplace/', 'as' => 'marketplace.'], function () {
+           Route::get('/', [\App\Http\Controllers\Admin\AdminController::class, 'marketplaces'])->name('index');
+           Route::post('/store', [\App\Http\Controllers\Admin\AdminController::class, 'storeMarketplace'])->name('store');
+           Route::post('/update', [\App\Http\Controllers\Admin\AdminController::class, 'updateMarketplace'])->name('update');
+            Route::post('/delete', [\App\Http\Controllers\Admin\AdminController::class, 'deleteMarketplace'])->name('delete');
         });
 
         // Пользователи
@@ -82,6 +89,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('/', [\App\Http\Controllers\Admin\AdminController::class, 'warehouses'])->name('index');
             Route::post('/store', [\App\Http\Controllers\Admin\AdminController::class, 'storeWarehouse'])->name('storeWarehouse');
             Route::post('/delete', [\App\Http\Controllers\Admin\AdminController::class, 'deleteWarehouse'])->name('deleteWarehouse');
+            Route::post('/update', [\App\Http\Controllers\Admin\AdminController::class, 'updateWarehouse'])->name('updateWarehouse');
         });
     });
 });

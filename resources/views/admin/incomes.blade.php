@@ -18,6 +18,13 @@
             </div>
         </div>
     @endif
+    @if($error ?? null)
+        <div class="container_my mt-2">
+            <div class="alert alert-danger" role="alert">
+                {{$error}}
+            </div>
+        </div>
+    @endif
 
     <div class="container_my mt-5 mb-5">
         <div class="card">

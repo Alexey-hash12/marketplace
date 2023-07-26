@@ -18,7 +18,6 @@ class Product extends Model
 
     protected $fillable = [
         'instance_id',
-        'marketplace_type_id',
         'name',
         'sku',
         'price',
@@ -33,11 +32,6 @@ class Product extends Model
         'files' => 'array',
         'colors' => 'array'
     ];
-
-    public function marketplace()
-    {
-        return $this->belongsTo(MarketplaceType::class, 'marketplace_type_id');
-    }
 
     public function warehouses()
     {

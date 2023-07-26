@@ -4,8 +4,8 @@
 
     <div class="jumbotron" style="background-color: #e9ecef;padding: 20px;">
         <div class="container">
-            <h3 style="font-size: 38px;font-weight: 400;" class="display-3">Товары</h3>
-            <p>Все товары в маркетплэйсах которые храняться на ваших складах</p>
+            <h3 style="font-size: 38px;font-weight: 400;" class="display-3">Маркетплэйсы</h3>
+            <p>Регистрируйте маркеплэйсы, с которыми сотрудничаете</p>
             <div class="d-flex" style="font-size: 14px; column-gap: 8px;">
             </div>
         </div>
@@ -32,7 +32,9 @@
 
         <input type="hidden" name="sort_type" id="sort_type_input">
         <input type="hidden" name="sort_value" id="sort_value_input">
+
         <div class="container_my mt-3 mb-3">
+
             <!-- Button trigger modal -->
             <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
                 Создать
@@ -69,35 +71,77 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($products as $product)
+                        @foreach($marketplaces as $item)
                             <tr>
-                                <th scope="row">{{$product->id}}</th>
-                                <td>{{$product->instance_id}}</td>
-                                <td>{{$product->name}}</td>
-                                <td>{{$product->sku}}</td>
-                                <td>{{round($product->price, 1)}}</td>
-                                <td>{{implode(',', $product->sizes ?? [])}}</td>
-                                <td>{{implode(',', $product->colors ?? [])}}</td>
-                                <td>{{implode(',', $product->files ?? [])}}</td>
-                                <td>{{$product->income_type}}</td>
+                                <th scope="row">{{$item->id}}</th>
+                                <td>{{$item->name}}</td>
                                 <td>
-                                    <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal1"
-                                            data-id="{{$product->id}}" class="btn btn-danger delete-btn">Удалить
-                                    </button>
+                                    <button type="button" class="{{$item->status == 'ACTIVE' ? 'btn btn-success' : 'btn btn-danger'}}">{{$item->status == 'ACTIVE' ? 'Активный' : 'Не активный'}}</button>
                                 </td>
+                                <td>{{$item->created_at}}</td>
+                                <td>
+                                    <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal4" data-id="{{$item->id}}" class="btn btn-primary change_id">Изменить статус</button>
+                                    <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal1" data-id="{{$item->id}}" class="btn btn-danger delete-btn">Удалить</button>
+                                </td>
+
                             </tr>
                         @endforeach
                         </tbody>
                     </table>
                 </div>
                 <div class="card-footer">
-                    {{$products->withQueryString()->links()}}
+                    {{$marketplaces->withQueryString()->links()}}
                 </div>
             </div>
         </div>
     </form>
+
+    <script>
+        const form = document.getElementById('myForm');
+
+        $('.form-sort').click(function () {
+            $('#sort_type_input').val($(this).data('name'));
+            $("#sort_value_input").val($(this).data('value'));
+            form.submit();
+        })
+    </script>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal4" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <form id="deleteForm" action="{{route('admin.marketplace.update')}}" method="post">
+            @csrf
+            <input type="hidden" id="updateTokenId" name="token_id" value="">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel1">Изменение статуса</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <b>Вы точно хотите изменить статус?</b>
+
+                        <div class="form-group mt-2" style="display:flex;flex-direction: column">
+                            <label for="">Выберите статус</label>
+                            <select required style="width: 100%" placeholder="Выберите статус" name="status">
+                                <option value="ACTIVE">Активный</option>
+                                <option value="CLOSED">Не активный</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button type="submit" class="btn btn-primary">Изменить</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+
+    <!-- Modal -->
     <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <form id="deleteForm" action="{{route('admin.products.deleteProducts')}}" method="post">
+        <form id="deleteForm" action="{{route('admin.marketplace.delete')}}" method="post">
             @csrf
             <input type="hidden" id="deleteTokenId" name="delete_id" value="">
             <div class="modal-dialog">
@@ -118,10 +162,9 @@
         </form>
     </div>
 
-
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <form action="{{route('admin.products.storeProducts')}}" method="post">
+        <form action="{{route('admin.marketplace.store')}}" method="post">
             @csrf
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -131,38 +174,8 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="">Id в системе Маркетплэйса</label>
-                            <input type="text" placeholder="Укажите Id" class="form-control" required name="instance_id">
-                        </div>
-                        <div class="form-group">
-                            <label for="">Наименование</label>
-                            <input type="text" placeholder="Укажите Наименование" class="form-control" required name="name">
-                        </div>
-                        <div class="form-group">
-                            <label for="">Артикул</label>
-                            <input type="text" placeholder="Укажите Артикул" class="form-control" required name="sku">
-                        </div>
-                        <div class="form-group">
-                            <label for="">Цена</label>
-                            <input type="number" step=".1" placeholder="Укажите Цену" class="form-control" required name="price">
-                        </div>
-                        <div class="form-group" style="display: flex;
-flex-direction: column;">
-                            <label for="">Тип поставки</label>
-                            <select required style="width: 100%" placeholder="Выберите тип" name="income_type">
-                                <option value="TYPE_BOX">Бокс</option>
-                                <option value="TYPE_MONOPALLET">Монопаллет</option>
-                                <option value="TYPE_SUPER_SAFE">Cэйф</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group" style="display: flex; flex-direction: column;">
-                            <label for="">Склады</label>
-                            <select multiple required name="warehouses[]" placeholder="Выберите Склады" data-silent-initial-value-set="true">
-                                @foreach(\App\Models\Warehouse::query()->get() as $warehouse)
-                                    <option value="{{$warehouse->id}}">{{$warehouse->name}}</option>
-                                @endforeach
-                            </select>
+                            <label for="">Название</label>
+                            <input type="text" class="form-control" required name="name">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -173,6 +186,15 @@ flex-direction: column;">
             </div>
         </form>
     </div>
+
+    <script>
+        $('.change_id').click(function () {
+
+            const id = $(this).data('id');
+            $('#updateTokenId').val(id);
+        })
+    </script>
+
     <script>
         VirtualSelect.init({
             ele: 'select',
@@ -180,5 +202,7 @@ flex-direction: column;">
             allOptionsSelectedText: 'Все',
         });
     </script>
+
     @include('admin.sort')
+
 @endsection

@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\Token;
 use App\Models\User;
 use App\Models\Warehouse;
+use App\Models\WarehouseProduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -37,19 +38,18 @@ class AdminController extends Controller
      */
     public function products(Request $request)
     {
-        $products = Product::query()->join('marketplace_types', 'products.marketplace_type_id', '=', 'marketplace_types.id')
-            ->select('products.*', DB::raw('marketplace_types.name as marketplace_name'));
+        $products = Product::query()->select('products.*');
 
         $products = $this->sort($products, $request);
         $products = $this->filter($products, $request);
         $products = $products->paginate(25);
 
         $session = session()->get('message');
+        $error = session()->get('error');
 
         $data = [
             'id' => '#',
             'instance_id' => 'Id в системе маркеплэйса',
-            'marketplace_name' => 'Маркеплэйс',
             'name' => 'Наименование',
             'sku' => 'Артикул',
             'price' => 'Цена',
@@ -59,7 +59,7 @@ class AdminController extends Controller
             'income_type' => 'Тип поставки'
         ];
 
-        return view('admin.products', compact('products', 'session', 'data'));
+        return view('admin.products', compact('products', 'session', 'data', 'error'));
     }
 
     public function storeProducts(Request $request)
@@ -88,6 +88,7 @@ class AdminController extends Controller
     public function deleteProducts(Request $request)
     {
         $token = Product::findOrFail($request->delete_id);
+        $token->warehouses()->sync([]);
         $token->delete();
         session()->flash('message', 'Вы успешно удалили продукт');
         return back();
@@ -104,8 +105,9 @@ class AdminController extends Controller
         $incomes = $incomes->paginate(25);
 
         $session = session()->get('message');
+        $error = session()->get('error');
 
-        return view('admin.incomes', compact('incomes', 'session'));
+        return view('admin.incomes', compact('incomes', 'session', 'error'));
     }
 
     /**
@@ -122,6 +124,7 @@ class AdminController extends Controller
 
         $users = $users->paginate(25);
         $session = session()->get('message');
+        $error = session()->get('error');
 
         $data = [
             'id' => '#',
@@ -131,7 +134,7 @@ class AdminController extends Controller
             'created_at' => 'Дата создания'
         ];
 
-        return view('admin.users', compact('users', 'session', 'data'));
+        return view('admin.users', compact('users', 'session', 'data', 'error'));
     }
 
     public function storeUsers(Request $request)
@@ -169,8 +172,9 @@ class AdminController extends Controller
         $tokens = $this->filter($tokens, $request);
         $tokens = $tokens->paginate(25);
         $session = session()->get('message');
+        $error = session()->get('error');
 
-        return view('admin.tokens', compact('tokens', 'session'));
+        return view('admin.tokens', compact('tokens', 'session', 'error'));
     }
 
     /**
@@ -204,8 +208,9 @@ class AdminController extends Controller
 
         $leftOver = $leftOver->paginate(25);
         $session = session()->get('message');
+        $error = session()->get('error');
 
-        return view('admin.leftOver', compact('leftOver', 'session'));
+        return view('admin.leftOver', compact('leftOver', 'session', 'error'));
     }
 
     public function deleteLeftOver(Request $request)
@@ -232,8 +237,41 @@ class AdminController extends Controller
     public function deleteWarehouse(Request $request)
     {
         $leftOver = Warehouse::where('id', $request->delete_id)->firstOrFail();
+
+        if (WarehouseProduct::query()->where('warehouse_id', $request->delete_id)) {
+            session()->flash('error', 'Вы не можете удалить склад, в нем лежат продукты');
+            return back();
+        }
+
         $leftOver->delete();
         session()->flash('message', 'Вы успешно удалили склад');
+
+        return back();
+    }
+
+    public function deleteMarketplace(Request $request)
+    {
+        $leftOver = MarketplaceType::where('id', $request->delete_id)->firstOrFail();
+
+        if (Warehouse::query()->where('marketplace_type_id', $leftOver->id)->exists()) {
+            session()->flash('error', 'Вы не можете удалить маркетплэйс, к нему привязаны склады');
+            return back();
+        }
+
+        $leftOver->delete();
+        session()->flash('message', 'Вы успешно удалили маркетплэйс');
+
+        return back();
+    }
+
+    public function updateWarehouse(Request $request)
+    {
+        $leftOver = Warehouse::where('id', $request->id)->firstOrFail();
+        $leftOver->name = $request->name;
+        $leftOver->marketplace_type_id = $request->marketplace_type_id;
+        $leftOver->save();
+
+        session()->flash('message', 'Вы успешно изменили склад');
 
         return back();
     }
@@ -252,6 +290,7 @@ class AdminController extends Controller
 
         $warehouses = $warehouses->paginate(25);
         $session = session()->get('message');
+        $error = session()->get('error');
 
         $data = [
             'id' => '#',
@@ -261,6 +300,49 @@ class AdminController extends Controller
             'created_at' => 'Дата создания',
         ];
 
-        return view('admin.warehouses', compact('warehouses', 'session', 'data'));
+        return view('admin.warehouses', compact('warehouses', 'session', 'data', 'error'));
+    }
+
+    public function marketplaces(Request $request)
+    {
+        $marketplaces = MarketplaceType::query();
+
+        $marketplaces = $this->sort($marketplaces, $request);
+        $marketplaces = $this->filter($marketplaces, $request);
+
+        $marketplaces = $marketplaces->paginate(25);
+
+        $session = session()->get('message');
+        $error = session()->get('error');
+
+        $data = [
+            'id' => '#',
+            'name' => 'Название',
+            'status' => 'Статус',
+            'created_at' => 'Дата создания'
+        ];
+
+        return view('admin.marketplaces', compact('session', 'error', 'marketplaces', 'data'));
+    }
+
+    public function storeMarketplace(Request $request)
+    {
+        $marketPlace = MarketplaceType::create([
+            'status' => MarketplaceType::ACTIVE,
+            'name' => $request->name
+        ]);
+        session()->flash('message', 'Вы успешно создали маркетплэйс');
+
+        return back();
+    }
+
+    public function updateMarketplace(Request $request)
+    {
+        $type = MarketplaceType::where('id', $request->token_id)->firstOrFail();
+        $type->status = $request->status;
+        $type->save();
+        session()->flash('message', 'Вы успешно изменили статус маркетплэйса');
+
+        return back();
     }
 }
