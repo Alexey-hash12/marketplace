@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 
 class Wildberries
 {
-    public static function parse()
+    public function parse()
     {
         $log = Log::build([
             'driver' => 'daily',

@@ -75,15 +75,40 @@
                                 <td>{{$product->instance_id}}</td>
                                 <td>{{$product->name}}</td>
                                 <td>{{$product->sku}}</td>
+                                <td>{{$product->status}}</td>
                                 <td>{{round($product->price, 1)}}</td>
                                 <td>{{implode(',', $product->sizes ?? [])}}</td>
                                 <td>{{implode(',', $product->colors ?? [])}}</td>
-                                <td>{{implode(',', $product->files ?? [])}}</td>
+                                @php
+                                    $files = implode(',', $product->files ?? []);
+                                    if (strlen($files) > 30) {
+                                        $shortText = substr($files, 0, 30) . "...";
+                                    } else {
+                                        $shortText = $files;
+                                    }
+                                @endphp
+                                <td>{{$shortText}}</td>
                                 <td>{{$product->income_type}}</td>
                                 <td>
-                                    <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal1"
-                                            data-id="{{$product->id}}" class="btn btn-danger delete-btn">Удалить
-                                    </button>
+                                    <div style="column-gap: 12px; row-gap: 12px;" class="d-flex">
+                                        <div>
+                                            @if($product->status == 'active')
+                                                <button type="button"  data-bs-toggle="modal" data-bs-target="#exampleModal7"
+                                                        data-id="{{$product->id}}" data-warehouses="{{$warehouses}}" data-product-warehouses="{{$product->warehouses}}" class="btn btn-primary primary-btn">Указать склады</button>
+                                            @endif
+                                        </div>
+                                        <div>
+                                            @if($product->status == 'active')
+                                                <button type="button"  data-bs-toggle="modal" data-bs-target="#exampleModal6"
+                                                        data-id="{{$product->id}}" class="btn btn-warning warning-btn">Вывести из продаж</button>
+                                            @endif
+                                        </div>
+                                        <div>
+                                            <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal1"
+                                                    data-id="{{$product->id}}" class="btn btn-danger delete-btn">Удалить
+                                            </button>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
@@ -118,6 +143,54 @@
         </form>
     </div>
 
+    <div class="modal fade" id="exampleModal6" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <form id="deleteForm" action="{{route('admin.products.close')}}" method="post">
+            @csrf
+            <input type="hidden" id="closeId" name="close_id" value="">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel1">Вывод из продаж</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Вы точно хотите вывести продукт из продаж?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button type="submit" class="btn btn-warning">Выполнить</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="modal fade" id="exampleModal7" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <form id="deleteForm" action="{{route('admin.products.warehouses.store')}}" method="post">
+            @csrf
+            <input type="hidden" id="productId" name="product_id" value="">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel1">Указание складов</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Склады
+                        <select name="warehouses[]" name="product_id" multiple id="" placeholder="Укажите склады...">
+                            @foreach($warehouses as $warehouse)
+                                <option class="warehouse-select-option-{{$warehouse->id}}" value="{{$warehouse->id}}">{{$warehouse->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -171,11 +244,6 @@ flex-direction: column;">
                                 @endforeach
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="">Файлы</label>
-                            <input type="file" name="files[]" multiple class="form-control is-invalid">
-                            <input type="color" multiple>
-                        </div>
                         <div class="form-group" style="display: flex; flex-direction: column;">
                             <label for="">Склады</label>
                             <select multiple required name="warehouses[]" placeholder="Выберите Склады" data-silent-initial-value-set="true">
@@ -199,6 +267,27 @@ flex-direction: column;">
             searchPlaceholderText: 'Поиск...',
             allOptionsSelectedText: 'Все',
         });
+        //
+        // $(document).ready(function() {
+        //     var counter = 1;
+        //
+        //     $('#add-input').click(function() {
+        //         var inputWrapper = $('<div class="input-wrapper"></div>');
+        //         var inputField = $('<input type="text" name="input-' + counter + '" />');
+        //         var removeButton = $('<button class="remove-input">Remove</button>');
+        //
+        //         inputWrapper.append(inputField);
+        //         inputWrapper.append(removeButton);
+        //         $('#text-inputs-container').append(inputWrapper);
+        //
+        //         counter++;
+        //
+        //         // Add event listener to remove button
+        //         removeButton.click(function() {
+        //             inputWrapper.remove();
+        //         });
+        //     });
+        // });
     </script>
     @include('admin.sort')
 @endsection

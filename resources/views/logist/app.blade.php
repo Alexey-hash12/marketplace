@@ -13,12 +13,6 @@
 <div class="d-flex justify-content-between flex-column flex-md-row align-items-center p-3 px-md-4 bg-white border-bottom box-shadow">
     <div class="d-flex">
         <h5 class="my-0 mr-md-auto font-weight-normal">Кабинет Логиста</h5>
-
-        <nav class="my-2 my-md-0 mr-md-3">
-            @foreach(\App\Models\MarketplaceType::query()->where('status', "ACTIVE")->get() as $marketplaceObj)
-                <a class="p-2 {{$marketPlace && $marketPlace->id == $marketplaceObj->id ? 'text-primary' : 'text-dark'}}" href="{{route('store-keeper.index', ['type' => $marketplaceObj->id])}}">{{$marketplaceObj->name}}</a>
-            @endforeach
-        </nav>
     </div>
     <form action="{{route('logout')}}" method="post">
         @csrf

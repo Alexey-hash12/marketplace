@@ -1,14 +1,11 @@
-@extends('logist.app')
+@extends('store-keeper.app')
 
 @section('content')
     <div class="jumbotron" style="background-color: #e9ecef;padding: 20px;">
         <div class="container">
-            <h3 style="font-size: 38px;font-weight: 400;" class="display-3">Продукты</h3>
-            <p>Все Продукты</p>
+            <h3 style="font-size: 38px;font-weight: 400;" class="display-3">Остатки</h3>
+            <p>Остатки продуктов в наших складах</p>
             <div class="d-flex" style="font-size: 14px; column-gap: 8px;">
-                <div>
-                    <a style="font-size: 14px;" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-success btn-lg" href="#" role="button">Создать »</a></p>
-                </div>
             </div>
         </div>
     </div>
@@ -24,12 +21,9 @@
     <div class="container_my mt-5 mb-5">
         <div class="bd-example">
             <ul class="nav nav-tabs" style="border: none;">
-                <li class="nav-item">
-                    <a class="nav-link active" href="{{route('logist.index')}}">Все</a>
-                </li>
                 @foreach($wareHouses as $wareHouse)
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{{route('logist.index')}}">{{$wareHouse->name}}</a>
+                        <a class="nav-link {{$wareHouse->id == $warehouse->id ? 'active' : ''}}" aria-current="page" href="{{route('store-keeper.leftovers', $wareHouse->id)}}">{{$wareHouse->name}}</a>
                     </li>
                 @endforeach
             </ul>
@@ -133,23 +127,23 @@
                                     {{$item}}
                                     @if ($key !== 'image')
 
-                                    <div class="d-flex" style="height: 24px;;align-items: center;column-gap: 8px;">
-                                        <!-- Стрелка вверх -->
-                                        <svg data-name="{{$key}}" data-value="desc"
-                                             class="form-sort strelka-top-3 {{request()->sort_type == $key && request()->sort_value == 'desc' ? 'strelka-hovered' : ''}}"
-                                             viewBox="0 0 5 9">
-                                            <path
-                                                d="M0.419,9.000 L0.003,8.606 L4.164,4.500 L0.003,0.394 L0.419,0.000 L4.997,4.500 L0.419,9.000 Z"></path>
-                                        </svg>
+                                        <div class="d-flex" style="height: 24px;;align-items: center;column-gap: 8px;">
+                                            <!-- Стрелка вверх -->
+                                            <svg data-name="{{$key}}" data-value="desc"
+                                                 class="form-sort strelka-top-3 {{request()->sort_type == $key && request()->sort_value == 'desc' ? 'strelka-hovered' : ''}}"
+                                                 viewBox="0 0 5 9">
+                                                <path
+                                                    d="M0.419,9.000 L0.003,8.606 L4.164,4.500 L0.003,0.394 L0.419,0.000 L4.997,4.500 L0.419,9.000 Z"></path>
+                                            </svg>
 
-                                        <!-- Стрелка вниз -->
-                                        <svg data-name="{{$key}}" data-value="asc"
-                                             class="form-sort strelka-bottom-3 {{request()->sort_type == $key && request()->sort_value == 'asc' ? 'strelka-hovered' : ''}}"
-                                             viewBox="0 0 5 9">
-                                            <path
-                                                d="M0.419,9.000 L0.003,8.606 L4.164,4.500 L0.003,0.394 L0.419,0.000 L4.997,4.500 L0.419,9.000 Z"></path>
-                                        </svg>
-                                    </div>
+                                            <!-- Стрелка вниз -->
+                                            <svg data-name="{{$key}}" data-value="asc"
+                                                 class="form-sort strelka-bottom-3 {{request()->sort_type == $key && request()->sort_value == 'asc' ? 'strelka-hovered' : ''}}"
+                                                 viewBox="0 0 5 9">
+                                                <path
+                                                    d="M0.419,9.000 L0.003,8.606 L4.164,4.500 L0.003,0.394 L0.419,0.000 L4.997,4.500 L0.419,9.000 Z"></path>
+                                            </svg>
+                                        </div>
                                     @endif
                                 </th>
                             @endforeach
@@ -157,7 +151,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($incomes as $key => $income)
+                        @foreach($products as $key => $income)
                             <tr>
                                 <td>
                                     {{$income->id}}
@@ -175,7 +169,7 @@
                                     {{$income->sku}}
                                 </td>
                                 <td>
-                                    {{$income->price}}
+                                {{$income->price}}
                                 <td>{{implode(',', $income->colors ?? [])}}</td>
 
                                 @php
@@ -191,17 +185,44 @@
                                 <td>
                                     {{$income->income_type}}
                                 </td>
+                                <td>
+                                    <button type="button"  data-bs-toggle="modal" data-bs-target="#exampleModal6"
+                                            data-id="{{$income->id}}" class="btn btn-warning warning-btn">Изменить остатки на складе</button>
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>
                     </table>
                 </div>
                 <div class="card-footer">
-                    {{$incomes->withQueryString()->links()}}
+                    {{$products->withQueryString()->links()}}
                 </div>
             </form>
         </div>
     </div>
+
+    <div class="modal fade" id="exampleModal12" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <form id="deleteForm" action="{{route('store-keeper.leftovers.add', $warehouse->id)}}" method="post">
+            @csrf
+            <input type="hidden" id="deleteTokenId" name="delete_id" value="">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel1">Удаление</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Вы точно хотите удалить?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button type="submit" class="btn btn-danger">Удалить</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
 
     <script>
         const form = document.getElementById('myForm');

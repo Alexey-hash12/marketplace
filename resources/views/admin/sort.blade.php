@@ -14,4 +14,13 @@
         const id = $(this).data('id');
         $('#deleteTokenId').val(id);
     })
+
+    $('.warning-btn').click(function () {
+        const id = $(this).data('id');
+        $('#closeId').val(id);
+    })
+    $('.primary-btn').click(function () {
+        const id = $(this).data('id');
+        $('#productId').val(id);
+    })
 </script>

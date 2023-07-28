@@ -16,8 +16,9 @@
 
         <nav class="my-2 my-md-0 mr-md-3">
             @foreach(\App\Models\MarketplaceType::query()->where('status', "ACTIVE")->get() as $marketplaceObj)
-                <a class="p-2 {{$marketPlace && $marketPlace->id == $marketplaceObj->id ? 'text-primary' : 'text-dark'}}" href="{{route('store-keeper.index', ['type' => $marketplaceObj->id])}}">{{$marketplaceObj->name}}</a>
+                <a class="p-2 {{isset($marketPlace) && $marketPlace->id == $marketplaceObj->id ? 'text-primary' : 'text-dark'}}" href="{{route('store-keeper.index', ['type' => $marketplaceObj->id])}}">{{$marketplaceObj->name}}</a>
             @endforeach
+                <a class="p-2" href="{{route('store-keeper.leftovers')}}">Остатки</a>
         </nav>
     </div>
     <form action="{{route('logout')}}" method="post">

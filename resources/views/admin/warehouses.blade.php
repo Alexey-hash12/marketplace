@@ -65,7 +65,7 @@
                         <tr>
                             <th scope="row">{{$warehouse->id}}</th>
                             <td>{{$warehouse->name}}</td>
-                            <td>{{$warehouse->marketplace_name}}</td>
+                            <td>{{$warehouse->marketplace_name ?? 'Наш склад'}}</td>
                             <td>{{$warehouse->count_products}}</td>
                             <td>{{$warehouse->created_at}}</td>
                             <td>
@@ -114,8 +114,8 @@
                         </div>
                         <div class="form-group">
                             <label for="">Маркетплэйс</label>
-                            <select name="marketplace_type_id" required class="form-control">
-                                <option value="">Выберите маркетплэйс</option>
+                            <select name="marketplace_type_id" class="form-control">
+                                <option value="">Наш склад</option>
                                 @foreach(\App\Models\MarketplaceType::where('status', 'active')->get() as $marketPlace)
                                     <option value="{{$marketPlace->id}}">{{$marketPlace->name}}</option>
                                 @endforeach
@@ -149,8 +149,8 @@
                         </div>
                         <div class="form-group">
                             <label for="">Маркетплэйс</label>
-                            <select name="marketplace_type_id" id="warehousemarketplace" required class="form-control">
-                                <option value="">Выберите маркетплэйс</option>
+                            <select name="marketplace_type_id" id="warehousemarketplace" class="form-control">
+                                <option value="">Наш склад</option>
                                 @foreach(\App\Models\MarketplaceType::where('status', 'active')->get() as $marketPlace)
                                     <option value="{{$marketPlace->id}}">{{$marketPlace->name}}</option>
                                 @endforeach

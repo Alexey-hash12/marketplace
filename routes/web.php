@@ -23,11 +23,13 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Логист
     Route::group(['middleware' => 'user.role:' . implode(',', [\App\Models\User::ROLE_LOGIST, \App\Models\User::ROLE_ADMIN]), 'prefix' => 'logist/', 'as' => 'logist.'], function () {
-        Route::get('/', [\App\Http\Controllers\Logist\LogistController::class, 'index'])->name('index');
+        Route::get('/{warehouse?}', [\App\Http\Controllers\Logist\LogistController::class, 'index'])->name('index');
     });
 
     // Кладовщик
     Route::group(['middleware' => 'user.role:' . implode(',', [\App\Models\User::ROLE_STORE_KEEPER, \App\Models\User::ROLE_ADMIN]), 'prefix' => 'store-keeper/', 'as' => 'store-keeper.'], function () {
+        Route::get('/leftovers/{warehouse?}', [\App\Http\Controllers\Storekeeper\StoreKeeperController::class, 'leftovers'])->name('leftovers');
+        Route::post('/leftovers/{warehouse}/add', [\App\Http\Controllers\Admin\AdminController::class, 'addLeftOver'])->name('leftovers.add');
         Route::get('/{type?}', [\App\Http\Controllers\Storekeeper\StoreKeeperController::class, 'index'])->name('index');
     });
 
@@ -45,6 +47,8 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('/', [\App\Http\Controllers\Admin\AdminController::class, 'products'])->name('index');
             Route::post('/store', [\App\Http\Controllers\Admin\AdminController::class, 'storeProducts'])->name('storeProducts');
             Route::post('/delete', [\App\Http\Controllers\Admin\AdminController::class, 'deleteProducts'])->name('deleteProducts');
+            Route::post('/close/', [\App\Http\Controllers\Admin\AdminController::class, 'closeProduct'])->name('close');
+            Route::post('/warehouses/store', [\App\Http\Controllers\Admin\AdminController::class, 'warehouseStore'])->name('warehouses.store');
         });
 
         // Поставки

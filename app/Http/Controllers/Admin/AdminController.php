@@ -47,11 +47,13 @@ class AdminController extends Controller
         $session = session()->get('message');
         $error = session()->get('error');
 
+        $warehouses = Warehouse::get();
         $data = [
             'id' => '#',
             'instance_id' => 'Id в системе маркеплэйса',
             'name' => 'Наименование',
             'sku' => 'Артикул',
+            'status' => 'Статус',
             'price' => 'Цена',
             'sizes' => 'Размеры',
             'colors' => 'Цвета',
@@ -59,7 +61,18 @@ class AdminController extends Controller
             'income_type' => 'Тип поставки'
         ];
 
-        return view('admin.products', compact('products', 'session', 'data', 'error'));
+        return view('admin.products', compact('products', 'session', 'warehouses', 'data', 'error'));
+    }
+
+    public function closeProduct(Request $request)
+    {
+        $closeId = $request->close_id;
+        $product = Product::findOrFail($closeId);
+        $product->status = 'closed';
+        $product->save();
+        session()->flash('message', 'Вы успешно вывели из продажи продукт');
+
+        return back();
     }
 
     public function storeProducts(Request $request)
@@ -91,6 +104,15 @@ class AdminController extends Controller
         $token->warehouses()->sync([]);
         $token->delete();
         session()->flash('message', 'Вы успешно удалили продукт');
+        return back();
+    }
+
+    public function warehouseStore(Request $request)
+    {
+        $token = Product::findOrFail($request->product_id);
+        $token->warehouses()->sync($request->warehouses);
+
+        session()->flash('message', 'Вы успешно указали склады продукта');
         return back();
     }
 
@@ -238,7 +260,7 @@ class AdminController extends Controller
     {
         $leftOver = Warehouse::where('id', $request->delete_id)->firstOrFail();
 
-        if (WarehouseProduct::query()->where('warehouse_id', $request->delete_id)) {
+        if (WarehouseProduct::query()->where('warehouse_id', $request->delete_id)->exists()) {
             session()->flash('error', 'Вы не можете удалить склад, в нем лежат продукты');
             return back();
         }
@@ -279,7 +301,7 @@ class AdminController extends Controller
     public function warehouses(Request $request)
     {
         $warehouses = Warehouse::query()
-            ->join('marketplace_types', 'warehouses.marketplace_type_id', '=', 'marketplace_types.id')
+            ->leftJoin('marketplace_types', 'warehouses.marketplace_type_id', '=', 'marketplace_types.id')
             ->leftJoin('warehouse_products', 'warehouse_products.warehouse_id', '=', 'warehouses.id')
             ->select('warehouses.*', DB::raw('marketplace_types.name as marketplace_name'), DB::raw('COUNT(warehouse_products.id) as count_products'))
             ->groupBy('warehouses.id');
