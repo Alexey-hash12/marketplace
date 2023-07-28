@@ -22,7 +22,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/logout', [\App\Http\Controllers\AuthController::class, 'logout'])->name('logout');
 
     // Логист
-    Route::group(['middleware' => 'user.role:' . implode(',', [\App\Models\User::ROLE_LOGIST]), 'prefix' => 'logist/', 'as' => 'logist.'], function () {
+    Route::group(['middleware' => 'user.role:' . implode(',', [\App\Models\User::ROLE_LOGIST, \App\Models\User::ROLE_ADMIN]), 'prefix' => 'logist/', 'as' => 'logist.'], function () {
         Route::get('/', [\App\Http\Controllers\Logist\LogistController::class, 'index'])->name('index');
     });
 
@@ -32,7 +32,7 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     // Упаковщик
-    Route::group(['middleware' => 'user.role:' . implode(',', [\App\Models\User::ROLE_PACKER]), 'prefix' => 'packer/',  'as' => 'packer.'], function () {
+    Route::group(['middleware' => 'user.role:' . implode(',', [\App\Models\User::ROLE_PACKER, \App\Models\User::ROLE_ADMIN]), 'prefix' => 'packer/',  'as' => 'packer.'], function () {
         Route::get('/', [\App\Http\Controllers\Packer\PackerController::class, 'index'])->name('index');
     });
 

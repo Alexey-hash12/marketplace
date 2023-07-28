@@ -18,7 +18,6 @@ class StoreKeeperController extends Controller
      */
     public function index(Request $request, $type = null)
     {
-
         $incomes = Income::query();
         $incomes = $this->sort($incomes, $request);
         $incomes = $this->filter($incomes, $request);
