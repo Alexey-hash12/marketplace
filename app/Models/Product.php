@@ -33,6 +33,17 @@ class Product extends Model
         'colors' => 'array'
     ];
 
+    public static array $colors = [
+        ['id' => 'red', 'label' => 'Красный', 'style' => 'red'],
+        ['id' => 'green', 'label' => 'Зеленый', 'style' => 'green'],
+        ['id' => 'blue', 'label' => 'Синий', 'style' => 'blue']
+    ];
+
+    public static  array $sizes = [
+        ['id' => '1', 'label' => '1 кв2'],
+        ['id' => '2', 'label' => '2 кв2']
+    ];
+
     public function warehouses()
     {
         return $this->belongsToMany(Warehouse::class, 'warehouse_products', 'warehouse_id', 'product_id');

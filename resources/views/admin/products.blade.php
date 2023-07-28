@@ -155,7 +155,27 @@ flex-direction: column;">
                                 <option value="TYPE_SUPER_SAFE">Cэйф</option>
                             </select>
                         </div>
-
+                        <div class="form-group" style="display: flex; flex-direction: column;">
+                            <label for="">Цвета</label>
+                            <select multiple required name="colors[]" placeholder="Выберите Цвета" data-silent-initial-value-set="true">
+                                @foreach(\App\Models\Product::$colors as $color)
+                                    <option value="{{$color['id']}}"><span style="height: 20px; width: 20px; background: {{$color['style']}}">{{$color['label']}}</span></option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group" style="display: flex; flex-direction: column;">
+                            <label for="">Размеры</label>
+                            <select multiple required name="sizes[]" placeholder="Выберите Размеры" data-silent-initial-value-set="true">
+                                @foreach(\App\Models\Product::$sizes as $size)
+                                    <option value="{{$size['id']}}">{{$size['label']}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Файлы</label>
+                            <input type="file" name="files[]" multiple class="form-control is-invalid">
+                            <input type="color" multiple>
+                        </div>
                         <div class="form-group" style="display: flex; flex-direction: column;">
                             <label for="">Склады</label>
                             <select multiple required name="warehouses[]" placeholder="Выберите Склады" data-silent-initial-value-set="true">
