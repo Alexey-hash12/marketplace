@@ -187,7 +187,7 @@
                                     }
                                 @endphp
                                 <td>{{$shortText}}</td>
-                                <td>{{implode(',', $income->sizes)}}</td>
+                                <td>{{implode(',', $income->sizes ?? [])}}</td>
                                 <td>
                                     {{$income->income_type}}
                                 </td>

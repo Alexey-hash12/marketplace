@@ -47,7 +47,7 @@
                                             <div class="d-flex col-4" style="column-gap: 8px;">
                                                 <div class="form-group col-4" style="width: 50%">
                                                     <label for="">Идентификатор</label>
-                                                    <input type="text" style="" class="form-control" name="id-search" value="{{request()->get('id-search') ?? ''}}">
+                                                    <input type="text" style="" class="form-control" name="item_id-search" value="{{request()->get('item_id-search') ?? ''}}">
                                                 </div>
 
                                                 <div class="form-group" style="width: 50%">
@@ -154,7 +154,7 @@
                         @foreach($products as $key => $income)
                             <tr>
                                 <td>
-                                    {{$income->id}}
+                                    {{$income->item_id}}
                                 </td>
                                 <td>
                                     {{$income->name}}
@@ -169,25 +169,16 @@
                                     {{$income->sku}}
                                 </td>
                                 <td>
-                                {{$income->price}}
-                                <td>{{implode(',', $income->colors ?? [])}}</td>
-
-                                @php
-                                    $files = implode(',', $income->files ?? []);
-                                    if (strlen($files) > 30) {
-                                        $shortText = substr($files, 0, 30) . "...";
-                                    } else {
-                                        $shortText = $files;
-                                    }
-                                @endphp
-                                <td>{{$shortText}}</td>
-                                <td>{{implode(',', $income->sizes)}}</td>
+                                    {{$income->price}}
+                                </td>
+                                <td>
+                                {{$income->product_left_count}}
                                 <td>
                                     {{$income->income_type}}
                                 </td>
                                 <td>
                                     <button type="button"  data-bs-toggle="modal" data-bs-target="#exampleModal6"
-                                            data-id="{{$income->id}}" class="btn btn-warning warning-btn">Изменить остатки на складе</button>
+                                            data-warehouse="{{$income->warehouses_id}}" data-id="{{$income->item_id}}" class="btn btn-primary change-leftovers-btn">Изменить остатки на складе</button>
                                 </td>
                             </tr>
                         @endforeach
@@ -201,29 +192,41 @@
         </div>
     </div>
 
-    <div class="modal fade" id="exampleModal12" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <form id="deleteForm" action="{{route('store-keeper.leftovers.add', $warehouse->id)}}" method="post">
+    <div class="modal fade" id="exampleModal6" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <form id="deleteForm" action="{{route('store-keeper.leftovers.add')}}" method="post">
             @csrf
-            <input type="hidden" id="deleteTokenId" name="delete_id" value="">
+            <input type="hidden" id="deleteId" name="leftover_id" value="">
+            <input type="hidden" id="warehouseid" name="warehouseid" value="">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel1">Удаление</h5>
+                        <h5 class="modal-title" id="exampleModalLabel1">Изменение Остатков</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        Вы точно хотите удалить?
+                        <div class="form-group">
+                            <label for="">Укажите остатки</label>
+                            <input type="number" required step="0.1" class="form-control" name="value" id="leftovervalue">
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                        <button type="submit" class="btn btn-danger">Удалить</button>
+                        <button type="submit" class="btn btn-primary">Изменить</button>
                     </div>
                 </div>
             </div>
         </form>
     </div>
 
+    <script>
+        $('.change-leftovers-btn').click(function () {
 
+            const id = $(this).data('id');
+            const warehouse = $(this).data('warehouse')
+            $('#deleteId').val(id);
+            $('#warehouseid').val(warehouse)
+        })
+    </script>
     <script>
         const form = document.getElementById('myForm');
 

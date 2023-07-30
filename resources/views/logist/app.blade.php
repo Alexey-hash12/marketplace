@@ -13,6 +13,15 @@
 <div class="d-flex justify-content-between flex-column flex-md-row align-items-center p-3 px-md-4 bg-white border-bottom box-shadow">
     <div class="d-flex">
         <h5 class="my-0 mr-md-auto font-weight-normal">Кабинет Логиста</h5>
+        @if(\Illuminate\Support\Facades\Auth::user()->role == 'ROLE_ADMIN')
+            <nav class="my-2 my-md-0 mr-md-3">
+                <a class="p-2" href="{{route('admin.index')}}">Admin Panel</a>
+            </nav>
+        @endif
+
+        <nav class="my-2 my-md-0 mr-md-3">
+            <a class="p-2" href="{{route('logist.supply-calculations')}}">Расчеты</a>
+        </nav>
     </div>
     <form action="{{route('logout')}}" method="post">
         @csrf

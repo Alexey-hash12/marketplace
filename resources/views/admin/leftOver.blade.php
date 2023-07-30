@@ -44,91 +44,35 @@
                     <table class="table table-hover">
                         <thead>
                         <tr>
-                            <th scope="col">
-                                #
-                                <div class="d-flex" style="height: 24px;;align-items: center;column-gap: 8px;">
-                                    <!-- Стрелка вверх -->
-                                    <svg data-name="id" data-value="desc" class="form-sort strelka-top-3 {{request()->sort_type == 'id' && request()->sort_value == 'desc' ? 'strelka-hovered' : ''}}" viewBox="0 0 5 9">
-                                        <path d="M0.419,9.000 L0.003,8.606 L4.164,4.500 L0.003,0.394 L0.419,0.000 L4.997,4.500 L0.419,9.000 Z" ></path>
-                                    </svg>
+                            @foreach($data as $key => $item)
+                                <th scope="col">
+                                    {{$item}}
+                                    <div class="d-flex" style="height: 24px;;align-items: center;column-gap: 8px;">
+                                        <!-- Стрелка вверх -->
+                                        <svg data-name="{{$key}}" data-value="desc" class="form-sort strelka-top-3 {{request()->sort_type == $key && request()->sort_value == 'desc' ? 'strelka-hovered' : ''}}" viewBox="0 0 5 9">
+                                            <path d="M0.419,9.000 L0.003,8.606 L4.164,4.500 L0.003,0.394 L0.419,0.000 L4.997,4.500 L0.419,9.000 Z" ></path>
+                                        </svg>
 
-                                    <!-- Стрелка вниз -->
-                                    <svg data-name="id" data-value="asc" class="form-sort strelka-bottom-3 {{request()->sort_type == 'id' && request()->sort_value == 'asc' ? 'strelka-hovered' : ''}}" viewBox="0 0 5 9">
-                                        <path d="M0.419,9.000 L0.003,8.606 L4.164,4.500 L0.003,0.394 L0.419,0.000 L4.997,4.500 L0.419,9.000 Z" ></path>
-                                    </svg>
-                                </div>
-                            </th>
-                            <th scope="col">
-                                Название склада
-                                <div class="d-flex" style="height: 24px;;align-items: center;column-gap: 8px;">
-                                    <!-- Стрелка вверх -->
-                                    <svg data-name="warehouse_name" data-value="desc" class="form-sort strelka-top-3 {{request()->sort_type == 'warehouse_name' && request()->sort_value == 'desc' ? 'strelka-hovered' : ''}}" viewBox="0 0 5 9">
-                                        <path d="M0.419,9.000 L0.003,8.606 L4.164,4.500 L0.003,0.394 L0.419,0.000 L4.997,4.500 L0.419,9.000 Z" ></path>
-                                    </svg>
-
-                                    <!-- Стрелка вниз -->
-                                    <svg data-name="warehouse_name" data-value="asc" class="form-sort strelka-bottom-3 {{request()->sort_type == 'warehouse_name' && request()->sort_value == 'asc' ? 'strelka-hovered' : ''}}" viewBox="0 0 5 9">
-                                        <path d="M0.419,9.000 L0.003,8.606 L4.164,4.500 L0.003,0.394 L0.419,0.000 L4.997,4.500 L0.419,9.000 Z" ></path>
-                                    </svg>
-                                </div>
-                            </th>
-                            <th scope="col">
-                                Название продукта
-                                <div class="d-flex" style="height: 24px;;align-items: center;column-gap: 8px;">
-                                    <!-- Стрелка вверх -->
-                                    <svg data-name="product_name" data-value="desc" class="form-sort strelka-top-3 {{request()->sort_type == 'product_name' && request()->sort_value == 'desc' ? 'strelka-hovered' : ''}}" viewBox="0 0 5 9">
-                                        <path d="M0.419,9.000 L0.003,8.606 L4.164,4.500 L0.003,0.394 L0.419,0.000 L4.997,4.500 L0.419,9.000 Z" ></path>
-                                    </svg>
-
-                                    <!-- Стрелка вниз -->
-                                    <svg data-name="product_name" data-value="asc" class="form-sort strelka-bottom-3 {{request()->sort_type == 'product_name' && request()->sort_value == 'asc' ? 'strelka-hovered' : ''}}" viewBox="0 0 5 9">
-                                        <path d="M0.419,9.000 L0.003,8.606 L4.164,4.500 L0.003,0.394 L0.419,0.000 L4.997,4.500 L0.419,9.000 Z" ></path>
-                                    </svg>
-                                </div>
-                            </th>
-                            <th scope="col">
-                                Количество
-                                <div class="d-flex" style="height: 24px;;align-items: center;column-gap: 8px;">
-                                    <!-- Стрелка вверх -->
-                                    <svg data-name="quantity" data-value="desc" class="form-sort strelka-top-3 {{request()->sort_type == 'quantity' && request()->sort_value == 'desc' ? 'strelka-hovered' : ''}}" viewBox="0 0 5 9">
-                                        <path d="M0.419,9.000 L0.003,8.606 L4.164,4.500 L0.003,0.394 L0.419,0.000 L4.997,4.500 L0.419,9.000 Z" ></path>
-                                    </svg>
-
-                                    <!-- Стрелка вниз -->
-                                    <svg data-name="quantity" data-value="asc" class="form-sort strelka-bottom-3 {{request()->sort_type == 'quantity' && request()->sort_value == 'asc' ? 'strelka-hovered' : ''}}" viewBox="0 0 5 9">
-                                        <path d="M0.419,9.000 L0.003,8.606 L4.164,4.500 L0.003,0.394 L0.419,0.000 L4.997,4.500 L0.419,9.000 Z" ></path>
-                                    </svg>
-                                </div>
-                            </th>
-                            <th scope="col">
-                                Дата создания
-                                <div class="d-flex" style="height: 24px;;align-items: center;column-gap: 8px;">
-                                    <!-- Стрелка вверх -->
-                                    <svg data-name="created_at" data-value="desc" class="form-sort strelka-top-3 {{request()->sort_type == 'created_at' && request()->sort_value == 'desc' ? 'strelka-hovered' : ''}}" viewBox="0 0 5 9">
-                                        <path d="M0.419,9.000 L0.003,8.606 L4.164,4.500 L0.003,0.394 L0.419,0.000 L4.997,4.500 L0.419,9.000 Z" ></path>
-                                    </svg>
-
-                                    <!-- Стрелка вниз -->
-                                    <svg data-name="created_at" data-value="asc" class="form-sort strelka-bottom-3 {{request()->sort_type == 'created_at' && request()->sort_value == 'asc' ? 'strelka-hovered' : ''}}" viewBox="0 0 5 9">
-                                        <path d="M0.419,9.000 L0.003,8.606 L4.164,4.500 L0.003,0.394 L0.419,0.000 L4.997,4.500 L0.419,9.000 Z" ></path>
-                                    </svg>
-                                </div>
-                            </th>
-                            <th>
-
-                            </th>
+                                        <!-- Стрелка вниз -->
+                                        <svg data-name="{{$key}}" data-value="asc" class="form-sort strelka-bottom-3 {{request()->sort_type == $key && request()->sort_value == 'asc' ? 'strelka-hovered' : ''}}" viewBox="0 0 5 9">
+                                            <path d="M0.419,9.000 L0.003,8.606 L4.164,4.500 L0.003,0.394 L0.419,0.000 L4.997,4.500 L0.419,9.000 Z" ></path>
+                                        </svg>
+                                    </div>
+                                </th>
+                            @endforeach
+                            <th scope="col"></th>
                         </tr>
                         </thead>
                         <tbody>
                         @foreach($leftOver as $item)
                             <tr>
-                                <th scope="row">{{$item->id}}</th>
+                                <th scope="row">{{$item->item_id}}</th>
+                                <td>{{$item->name}}</td>
+                                <td>{{$item->product_left_count ?? 0}}</td>
                                 <td>{{$item->warehouse_name}}</td>
-                                <td>{{$item->product_name}}</td>
-                                <td>{{$item->quantity}}</td>
                                 <td>{{$item->created_at}}</td>
                                 <td>
-                                    <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal1" data-id="{{$item->id}}" class="btn btn-danger delete-btn">Удалить</button>
+                                    <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal1" data-warehouse="{{$item->warehouses_id}}" data-id="{{$item->item_id}}" class="btn btn-primary delete-btn">Изменить</button>
                                 </td>
                             </tr>
 
@@ -156,21 +100,25 @@
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <form id="deleteForm" action="{{route('admin.left-overs.deleteLeftOver')}}" method="post">
+        <form id="deleteForm" action="{{route('admin.left-overs.updateLeftOver')}}" method="post">
             @csrf
-            <input type="hidden" id="deleteId" name="delete_id" value="">
+            <input type="hidden" id="deleteId" name="leftover_id" value="">
+            <input type="hidden" id="warehouseid" name="warehouseid" value="">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel1">Удаление</h5>
+                        <h5 class="modal-title" id="exampleModalLabel1">Изменение Остатков</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        Вы точно хотите удалить?
+                        <div class="form-group">
+                            <label for="">Укажите остатки</label>
+                            <input type="number" required step="0.1" class="form-control" name="value" id="leftovervalue">
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                        <button type="submit" class="btn btn-danger">Удалить</button>
+                        <button type="submit" class="btn btn-primary">Изменить</button>
                     </div>
                 </div>
             </div>
@@ -203,7 +151,9 @@
         $('.delete-btn').click(function () {
 
             const id = $(this).data('id');
+            const warehouse = $(this).data('warehouse')
             $('#deleteId').val(id);
+            $('#warehouseid').val(warehouse)
         })
     </script>
 @endsection

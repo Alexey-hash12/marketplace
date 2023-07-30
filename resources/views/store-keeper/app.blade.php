@@ -19,6 +19,9 @@
                 <a class="p-2 {{isset($marketPlace) && $marketPlace->id == $marketplaceObj->id ? 'text-primary' : 'text-dark'}}" href="{{route('store-keeper.index', ['type' => $marketplaceObj->id])}}">{{$marketplaceObj->name}}</a>
             @endforeach
                 <a class="p-2" href="{{route('store-keeper.leftovers')}}">Остатки</a>
+                @if(\Illuminate\Support\Facades\Auth::user()->role == 'ROLE_ADMIN')
+                        <a class="p-2" href="{{route('admin.index')}}">Admin Panel</a>
+                @endif
         </nav>
     </div>
     <form action="{{route('logout')}}" method="post">

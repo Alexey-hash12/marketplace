@@ -222,8 +222,16 @@ class AdminController extends Controller
 
     public function leftover(Request $request)
     {
-        $leftOver = Leftover::query()->join('products', 'leftovers.product_id', '=', 'products.id')
-        ->join('warehouses', 'leftovers.warehouse_id', '=', 'warehouses.id')->select('leftovers.*', DB::raw('products.name as product_name'), DB::raw('warehouses.name as warehouse_nam'));
+        $leftOver = DB::table('products')
+            ->where('status', 'active')
+            ->whereNull('deleted_at')
+            ->join('warehouse_products', function ($join) {
+                $join->on('products.id', '=', 'warehouse_products.product_id');
+            })
+            ->join('warehouses', function ($join) {
+                $join->on('warehouses.id', '=', 'warehouse_products.warehouse_id');
+            })
+            ->select('products.*', 'products.id as item_id', 'warehouses.id as warehouses_id','warehouses.name as warehouse_name', 'warehouse_products.left_count as product_left_count');
 
         $leftOver = $this->sort($leftOver, $request);
         $leftOver = $this->filter($leftOver, $request);
@@ -232,14 +240,27 @@ class AdminController extends Controller
         $session = session()->get('message');
         $error = session()->get('error');
 
-        return view('admin.leftOver', compact('leftOver', 'session', 'error'));
+        $data = [
+            'item_id' => '#',
+            'name' => 'Наименование продукта',
+            'product_left_count' => 'Остаток на складе',
+            'warehouse_name' => 'Склад',
+            'created_at' => 'Дата создания'
+        ];
+
+        return view('admin.leftOver', compact('leftOver', 'session', 'error', 'data'));
     }
 
-    public function deleteLeftOver(Request $request)
+    public function updateLeftOver(Request $request)
     {
-        $leftOver = Leftover::where('id', $request->delete_id)->firstOrFail();
-        $leftOver->delete();
-        session()->flash('message', 'Вы успешно удалили остаток');
+        $data = $request->all();
+
+
+        $product = WarehouseProduct::where('product_id', $request->leftover_id)->where('warehouse_id', $request->warehouseid)->firstOrFail();
+        $product->left_count = $request->value;
+        $product->save();
+
+        session()->flash('message', 'Вы успешно изменили остатки на складе');
 
         return back();
     }
