@@ -77,4 +77,11 @@ class LogistController extends Controller
 
         return view('logist.supply-calculation', compact('supplyCalculations', 'data', 'session', 'wareHouses'));
     }
+
+    public function supplyCalculationStore(Request $request)
+    {
+        $supplyCalculationWarehouses = $request->get('warehouses');
+        print_r($request->all());
+        die();
+    }
 }

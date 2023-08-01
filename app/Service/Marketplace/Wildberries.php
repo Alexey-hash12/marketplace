@@ -90,4 +90,9 @@ class Wildberries
 
         return null;
     }
+
+    public function parseOrders()
+    {
+        https://statistics-api.wildberries.ru/api/v1/supplier/orders
+    }
 }

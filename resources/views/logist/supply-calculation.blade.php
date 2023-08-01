@@ -7,7 +7,7 @@
             <p>Скрипт рассчитает необходимое кол-во единиц товара для заказа и запланирует пополнение остатков с учетом установленных сроков</p>
             <div class="d-flex" style="font-size: 14px; column-gap: 8px;">
                 <div>
-                    <a style="font-size: 14px;" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-success btn-lg" href="#" role="button">Расчитать поставки »</a></p>
+                    <a style="font-size: 14px;" data-bs-toggle="modal" data-bs-target="#exampleModal71" class="btn btn-success btn-lg" href="#" role="button">Расчитать поставки »</a></p>
                 </div>
             </div>
         </div>
@@ -24,12 +24,9 @@
     <div class="container_my mt-5 mb-5">
         <div class="bd-example">
             <ul class="nav nav-tabs" style="border: none;">
-                <li class="nav-item">
-                    <a class="nav-link active" href="{{route('logist.index')}}">Все</a>
-                </li>
                 @foreach($wareHouses as $wareHouse)
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{{route('logist.index')}}">{{$wareHouse->name}}</a>
+                        <a class="nav-link active" aria-current="page" href="{{route('logist.supply-calculations', ['warehouse' => $wareHouse])}}">{{$wareHouse->name}}</a>
                     </li>
                 @endforeach
             </ul>
@@ -96,7 +93,63 @@
         </div>
     </div>
 
+    <div class="modal fade" id="exampleModal71" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <form id="deleteForm" action="{{route('logist.supply-calculation.store')}}" method="post">
+            @csrf
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel1">Создание расчета</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="">Продукт</label>
+                            <select data-search="true" required name="product" placeholder="Выберите Продукт" data-silent-initial-value-set="true">
+                                @foreach(\App\Models\Product::get() as $product)
+                                    <option value="{{$product->id}}">{{$product->sku}} {{$product->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Количество дней</label>
+                            <input type="number" class="form-control" name="count_days" value="0" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="">Склады</label>
+                            @foreach($wareHouses as $warehouse)
+                                <div class="form-check">
+                                    <input class="form-check-input" name="warehouses[]" value="{{$warehouse->id}}" type="checkbox" id="flexCheckDefault">
+                                    <label class="form-check-label" for="flexCheckDefault">
+                                        {{$warehouse->name}}
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
+                        <div class="form-group mt-3">
+                            <button type="button" class="btn btn-primary">Рассчитать</button>
+
+                            <div class="form-group">
+                                <label for="">Рассчитанное количество</label>
+                                <input type="number" disabled step=".1" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button type="submit" disabled class="btn btn-primary">Сохранить</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
     <script>
+        VirtualSelect.init({
+            ele: 'select',
+            searchPlaceholderText: 'Поиск...',
+            allOptionsSelectedText: 'Все',
+        });
         const form = document.getElementById('myForm');
 
         $('.form-sort').click(function () {
