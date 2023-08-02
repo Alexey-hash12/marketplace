@@ -93,6 +93,34 @@ class Wildberries
 
     public function parseOrders()
     {
-        https://statistics-api.wildberries.ru/api/v1/supplier/orders
+        $url = 'https://statistics-api.wildberries.ru/api/v1/supplier/orders';
+        $dateFrom = '2020-01-01';
+        $token = Token::where('marketplace_id', 1)->where('type', 'statistic')->first();
+
+        $headers = [
+            'Authorization: ' . $token->value
+        ];
+
+        $queryParams = [
+            'dateFrom' => $dateFrom
+        ];
+
+        $curl = curl_init();
+
+        curl_setopt($curl, CURLOPT_URL, $url . '?' . http_build_query($queryParams));
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+
+        $response = curl_exec($curl);
+
+        if ($response === false) {
+            $error = curl_error($curl);
+        } else {
+            $data = json_decode($response, true);
+            if ($data && count($data)) {
+                return $data;
+            }
+        }
+        return null;
     }
 }
