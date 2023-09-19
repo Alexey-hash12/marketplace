@@ -93,57 +93,6 @@
         </div>
     </div>
 
-    <div class="modal fade" id="exampleModal71" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <form id="deleteForm" action="{{route('logist.supply-calculation.store')}}" method="post">
-            @csrf
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel1">Создание расчета</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="">Продукт</label>
-                            <select data-search="true" required name="product" placeholder="Выберите Продукт" data-silent-initial-value-set="true">
-                                @foreach(\App\Models\Product::get() as $product)
-                                    <option value="{{$product->id}}">{{$product->sku}} {{$product->name}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="">Количество дней</label>
-                            <input type="number" class="form-control" name="count_days" value="0" min="0">
-                        </div>
-                        <div class="form-group">
-                            <label for="">Склады</label>
-                            @foreach($wareHouses as $warehouse)
-                                <div class="form-check">
-                                    <input class="form-check-input" name="warehouses[]" value="{{$warehouse->id}}" type="checkbox" id="flexCheckDefault">
-                                    <label class="form-check-label" for="flexCheckDefault">
-                                        {{$warehouse->name}}
-                                    </label>
-                                </div>
-                            @endforeach
-                        </div>
-                        <div class="form-group mt-3">
-                            <button type="button" class="btn btn-primary">Рассчитать</button>
-
-                            <div class="form-group">
-                                <label for="">Рассчитанное количество</label>
-                                <input type="number" disabled step=".1" class="form-control">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                        <button type="submit" disabled class="btn btn-primary">Сохранить</button>
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
-
     <script>
         VirtualSelect.init({
             ele: 'select',

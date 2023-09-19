@@ -36,8 +36,13 @@ class LogistController extends Controller
             'sizes' => 'Размеры',
             'income_type' => 'Тип поставки'
         ];
-
         return view('logist.index', compact('wareHouses', 'session', 'incomes', 'data', 'warehouse'));
+
+    }
+
+    public function products(Request $request, $warehouse = null)
+    {
+        return view('logist.incomes');
     }
 
     public function supplyCalculation(Request $request, $warehouse = null)

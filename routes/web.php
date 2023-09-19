@@ -25,7 +25,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['middleware' => 'user.role:' . implode(',', [\App\Models\User::ROLE_LOGIST, \App\Models\User::ROLE_ADMIN]), 'prefix' => 'logist/', 'as' => 'logist.'], function () {
         Route::get('/supply-calculations/{warehouse?}', [\App\Http\Controllers\Logist\LogistController::class, 'supplyCalculation'])->name('supply-calculations');
         Route::post('/supply-calculations', [\App\Http\Controllers\Logist\LogistController::class, 'supplyCalculationStore'])->name('supply-calculation.store');
-        Route::get('/{warehouse?}', [\App\Http\Controllers\Logist\LogistController::class, 'index'])->name('index');
+        Route::get('/products/{warehouse?}', [\App\Http\Controllers\Logist\LogistController::class, 'products'])->name('products');
+        Route::get('/', [\App\Http\Controllers\Logist\LogistController::class, 'index'])->name('index');
     });
 
     // Кладовщик

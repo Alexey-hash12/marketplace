@@ -24,6 +24,9 @@
         <nav class="my-2 my-md-0 mr-md-3">
             <a class="p-2" href="{{route('logist.supply-calculations')}}">Расчеты</a>
         </nav>
+        <nav class="my-2 my-md-0 mr-md-3">
+            <a class="p-2" href="{{route('logist.products')}}">Продукты</a>
+        </nav>
     </div>
     <form action="{{route('logout')}}" method="post">
         @csrf
